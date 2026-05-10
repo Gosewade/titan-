@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titan Commerce Launchpad</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#c0392b;--navy:#0F1F5C;--green:#16A34A;--border:#eee;--bg:#f5f5f5}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);min-height:100vh;max-width:420px;margin:0 auto}
+.page{display:none}.page.active{display:block}
+.pb{padding-bottom:72px}
+
+/* ── LOGIN ── */
+.login-bg{min-height:100vh;background:linear-gradient(145deg,#0F1F5C 0%,#1a3a8f 50%,#0a1840 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+.login-bg::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.03);top:-80px;right:-80px}
+.login-bg::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(22,163,74,0.08);bottom:-60px;left:-60px}
+.login-logo-wrap{text-align:center;margin-bottom:28px}
+.login-logo{color:#fff;font-size:32px;font-weight:300;letter-spacing:1px}
+.login-tagline{color:rgba(255,255,255,0.5);font-size:11px;margin-top:4px;letter-spacing:0.5px}
+.titan-strip{background:rgba(22,163,74,0.15);border:1px solid rgba(22,163,74,0.3);border-radius:8px;padding:8px 16px;text-align:center;margin-bottom:20px}
+.titan-strip span{color:#7EC8A0;font-size:11px;font-weight:600}
+.login-card{background:#fff;border-radius:20px;padding:28px 24px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25)}
+.login-tabs{display:flex;background:#f5f5f5;border-radius:10px;padding:4px;margin-bottom:22px}
+.ltab{flex:1;text-align:center;padding:8px;font-size:13px;border-radius:8px;cursor:pointer;color:#888;font-weight:500;transition:all 0.2s}
+.ltab.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,0.08);font-weight:600}
+.form-group{margin-bottom:16px}
+.form-group label{font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px}
+.form-group input,.form-group select{width:100%;padding:11px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:14px;outline:none;transition:border 0.2s;background:#fff}
+.form-group input:focus{border-color:var(--navy)}
+.login-btn{width:100%;padding:13px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;transition:background 0.2s}
+.login-btn:hover{background:#a93226}
+.divider{text-align:center;color:#ccc;font-size:11px;margin:16px 0;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#eee}
+.divider::before{left:0}.divider::after{right:0}
+.demo-row{display:flex;gap:8px}
+.demo-btn{flex:1;padding:10px;border:1.5px solid #e8e8e8;background:#fff;border-radius:10px;font-size:12px;cursor:pointer;font-weight:500;color:#555;transition:all 0.2s}
+.demo-btn:hover{border-color:var(--navy);color:var(--navy)}
+.signup-link{text-align:center;margin-top:16px;font-size:12px;color:#888}
+.signup-link span{color:var(--red);cursor:pointer;font-weight:600}
+
+/* ── NAV ── */
+.nav{background:var(--red);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.nav-logo{color:#fff;font-size:20px;font-weight:500;flex:1;cursor:pointer}
+.nav-right{display:flex;gap:14px;color:#fff;font-size:20px;align-items:center}
+.nav-icon{cursor:pointer;position:relative}
+.cart-dot{position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#fff;border-radius:50%;font-size:6px;color:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* ── SEARCH ── */
+.search-wrap{background:#a93226;padding:8px 16px 10px}
+.sbox{background:#fff;border-radius:20px;padding:9px 16px;display:flex;align-items:center;gap:8px}
+.sbox input{border:none;outline:none;flex:1;font-size:13px;color:#444}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0F1F5C,#162460,#0a1840);padding:20px 16px 24px}
+.hero-tag{background:var(--green);color:#dcfce7;font-size:9px;font-weight:700;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;letter-spacing:0.8px}
+.hero-title{color:#fff;font-size:22px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.hero-sub{color:rgba(255,255,255,0.55);font-size:11px;margin-bottom:16px}
+.hero-stats{display:flex;gap:8px}
+.hstat{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px;text-align:center;flex:1}
+.hn{color:#7EC8A0;font-size:17px;font-weight:700}
+.hl{color:rgba(255,255,255,0.5);font-size:9px;margin-top:2px}
+
+/* ── CITY ── */
+.city-wrap{background:#fff;padding:12px 16px;border-bottom:1px solid var(--border)}
+.city-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.city-label{font-size:11px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:0.5px}
+.city-change{font-size:11px;color:var(--red);cursor:pointer}
+.city-current{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.city-name-big{font-size:15px;font-weight:700;color:var(--navy)}
+.city-sub-sm{font-size:10px;color:#888}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;border:1.5px solid var(--border);color:#555;background:#fff;transition:all 0.2s}
+.chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── DOMAIN ── */
+.domain-wrap{background:#f8f8f8;padding:12px 16px;border-bottom:1px solid var(--border)}
+.domain-label{font-size:11px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.domain-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.domain-row::-webkit-scrollbar{display:none}
+.dpill{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 12px;border-radius:12px;background:#fff;border:1.5px solid var(--border);min-width:58px;transition:all 0.2s}
+.dpill.active{background:var(--navy);border-color:var(--navy)}
+.dpill.active .dp-icon,.dpill.active .dp-lbl{color:#fff}
+.dp-icon{font-size:20px}
+.dp-lbl{font-size:9px;font-weight:600;color:#555;white-space:nowrap}
+
+/* ── BRANDS ── */
+.brands-sec{padding:14px 16px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-size:13px;font-weight:700;color:#111}
+.sec-ct{font-size:11px;color:#888;background:#f0f0f0;padding:3px 8px;border-radius:10px}
+.brands-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:13px;position:relative;cursor:pointer;transition:all 0.15s}
+.bc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.08)}
+.bc-badges{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.badge{font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px}
+.exc{background:#dcfce7;color:#166534}
+.tvb{background:#dbeafe;color:#1e40af}
+.hot{background:#ffedd5;color:#9a3412}
+.cityb{background:#f3e8ff;color:#7c3aed}
+.bi{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin-bottom:8px}
+.bn2{font-size:13px;font-weight:700;color:#111;margin-bottom:1px}
+.bcat{font-size:10px;color:#888;margin-bottom:6px}
+.bprice{font-size:13px;font-weight:700;color:var(--red);margin-bottom:8px}
+.bbtn{width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:7px;font-size:11px;font-weight:600;cursor:pointer}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;max-width:420px;margin:0 auto;background:#fff;border-top:1px solid var(--border);display:flex;padding:8px 0 14px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.06)}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.bni-icon{font-size:20px}
+.bni-lbl{font-size:9px;color:#888;font-weight:500}
+.bni.act .bni-lbl{color:var(--red)}
+
+/* ── DETAIL ── */
+.dh{background:linear-gradient(135deg,#0F1F5C,#162460);padding:20px 16px}
+.dback{color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.dtop{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.di-lg{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+.dname{color:#fff;font-size:20px;font-weight:700;margin-bottom:3px}
+.dcat{color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px}
+.dtags{display:flex;gap:6px;flex-wrap:wrap}
+.dtag{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:9px;padding:3px 8px;border-radius:5px}
+.city-strip{background:rgba(126,200,160,0.15);border:1px solid rgba(126,200,160,0.25);border-radius:8px;padding:8px 12px}
+.city-strip span{color:#7EC8A0;font-size:11px}
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.tab{flex:1;text-align:center;padding:12px 8px;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+
+/* ── PRODUCTS TAB ── */
+.prod-list{padding:14px}
+.prod-row{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.prod-icon{width:44px;height:44px;background:#f8f8f8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.prod-info{flex:1}
+.prod-name{font-size:13px;font-weight:600;color:#111}
+.prod-price{font-size:12px;color:var(--red);font-weight:700;margin-top:2px}
+.prod-btn{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* ── FOUNDER STORY TAB ── */
+.founder-sec{padding:14px}
+.fc{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.fc-head{background:linear-gradient(135deg,#f0fdf4,#dcfce7);padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #dcfce7}
+.fav{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;border:2px solid #fff;flex-shrink:0}
+.fname{font-size:15px;font-weight:700;color:#111}
+.frole{font-size:11px;color:#888;margin-top:2px}
+.fstamp{display:flex;align-items:center;gap:4px;margin-top:5px}
+.fstamp span{font-size:10px;color:var(--green);font-weight:600}
+.fc-body{padding:14px}
+.fstory{font-size:13px;color:#444;line-height:1.75;margin-bottom:14px;font-style:italic}
+.why-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px}
+.why-lbl{font-size:10px;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.why-text{font-size:12px;color:#0c4a6e;line-height:1.65}
+.ftl{padding:14px;border-top:1px solid var(--border)}
+.ftl-title{font-size:11px;font-weight:700;color:#333;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.3px}
+.ftl-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ftl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ftl-text{font-size:12px;color:#444;flex:1}
+.ftl-amt{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap}
+
+/* ── IMPACT TAB ── */
+.impact-sec{padding:14px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.mc{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.mc-n{font-size:22px;font-weight:700;color:var(--navy)}
+.mc-l{font-size:10px;color:#888;margin-top:3px}
+.cdd{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px}
+.cdd-title{font-size:12px;font-weight:700;color:#333;margin-bottom:12px}
+.cdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cdc{font-size:12px;color:#444;width:70px}
+.cdbw{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.cdb{height:100%;background:var(--navy);border-radius:4px;transition:width 0.5s}
+.cdp{font-size:11px;color:#888;width:28px;text-align:right}
+
+/* ── DASHBOARD ── */
+.dash-head{background:var(--navy);padding:20px 16px}
+.dash-head h1{color:#fff;font-size:20px;font-weight:700;margin-bottom:3px}
+.dash-head p{color:rgba(255,255,255,0.55);font-size:12px}
+.dash-body{padding:14px}
+.dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.dm{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px}
+.dm-lbl{font-size:11px;color:#888;margin-bottom:4px}
+.dm-val{font-size:22px;font-weight:700;color:var(--navy)}
+.dm-sub{font-size:10px;color:var(--green);margin-top:3px;font-weight:600}
+.chart-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+.chart-title{font-size:12px;font-weight:700;color:#333;margin-bottom:14px}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:90px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{background:var(--navy);border-radius:4px 4px 0 0;width:100%}
+.bar-lbl{font-size:9px;color:#888}
+.orders-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+.order-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f8f8f8}
+.order-row:last-child{border-bottom:none}
+.oi{width:36px;height:36px;background:#f0fdf4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.oin{font-size:12px;font-weight:600;color:#111}
+.oil{font-size:10px;color:#888;margin-top:1px}
+.oamt{font-size:13px;font-weight:700;color:var(--red)}
+.ostatus{font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px}
+.del{background:#dcfce7;color:#166534}
+.proc{background:#fef3c7;color:#92400e}
+.ship{background:#dbeafe;color:#1e40af}
+.ls-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px}
+.ls-title{font-size:12px;font-weight:700;color:#333;margin-bottom:12px}
+.ls-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ls-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.done{background:var(--green)}.prog{background:#f59e0b}.todo{background:#e5e7eb}
+.ls-txt{font-size:12px;color:#444;flex:1}
+.ls-date{font-size:10px;color:#aaa;white-space:nowrap}
+
+/* ── CART ── */
+.cart-head{background:var(--navy);padding:20px 16px}
+.cart-head h1{color:#fff;font-size:20px;font-weight:700}
+.cart-body{padding:14px}
+.cart-row{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cart-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cart-info{flex:1}
+.cart-name{font-size:13px;font-weight:600;color:#111}
+.cart-brand{font-size:10px;color:#888;margin-top:2px}
+.cart-price{font-size:14px;font-weight:700;color:var(--red)}
+.qty-ctrl{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty-btn{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.qty-num{font-size:13px;font-weight:600;color:#111;min-width:16px;text-align:center}
+.cart-del{color:#ccc;font-size:18px;cursor:pointer}
+.cart-total{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+.ct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ct-row:last-child{margin-bottom:0;padding-top:12px;border-top:1px solid var(--border)}
+.ct-lbl{font-size:13px;color:#555}
+.ct-val{font-size:13px;font-weight:600;color:#111}
+.ct-total-lbl{font-size:15px;font-weight:700;color:#111}
+.ct-total-val{font-size:18px;font-weight:700;color:var(--navy)}
+.checkout-btn{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
+.empty-cart{text-align:center;padding:60px 20px;color:#888}
+.empty-cart .ei{font-size:48px;margin-bottom:12px}
+.empty-cart p{font-size:14px;margin-bottom:16px}
+.shop-now-btn{padding:12px 28px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* ── PROFILE ── */
+.prof-head{background:var(--navy);padding:30px 16px;text-align:center}
+.pav{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;margin:0 auto 12px;border:3px solid rgba(255,255,255,0.2)}
+.pname{color:#fff;font-size:20px;font-weight:700}
+.prole{color:rgba(255,255,255,0.55);font-size:12px;margin-top:4px}
+.prof-body{padding:14px}
+.ps{background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.psi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f8f8f8;cursor:pointer;transition:background 0.1s}
+.psi:last-child{border-bottom:none}
+.psi:hover{background:#f9f9f9}
+.ps-ic{font-size:20px;width:26px;text-align:center}
+.ps-tx{flex:1;font-size:13px;font-weight:500;color:#111}
+.ps-ar{color:#ccc;font-size:16px}
+.logout-btn{width:100%;padding:14px;background:#fff;color:var(--red);border:1.5px solid var(--red);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;z-index:9999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ── SIGNUP ── */
+.signup-card{background:#fff;border-radius:20px;padding:28px 24px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.25)}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ════ LOGIN PAGE ════ -->
+<div class="page active" id="page-login">
+<div class="login-bg">
+  <div class="login-logo-wrap">
+    <div class="login-logo">snapdeal</div>
+    <div class="login-tagline">TITAN COMMERCE LAUNCHPAD</div>
+  </div>
+  <div class="titan-strip"><span>🚀 Powered by Titan Capital × Snapdeal</span></div>
+  <div class="login-card">
+    <div class="login-tabs">
+      <div class="ltab active" onclick="switchLoginTab('consumer')">Consumer</div>
+      <div class="ltab" onclick="switchLoginTab('brand')">Brand Partner</div>
+    </div>
+    <div id="consumer-form">
+      <div class="form-group"><label>Phone / Email</label><input id="c-email" placeholder="Enter phone or email" type="text"></div>
+      <div class="form-group"><label>Password</label><input id="c-pass" placeholder="Enter password" type="password"></div>
+      <button class="login-btn" onclick="login('consumer')">Login</button>
+    </div>
+    <div id="brand-form" style="display:none">
+      <div class="form-group"><label>Brand Email</label><input placeholder="brand@company.com" type="text"></div>
+      <div class="form-group"><label>Password</label><input placeholder="Enter password" type="password"></div>
+      <button class="login-btn" onclick="login('brand')">Access Dashboard</button>
+    </div>
+    <div class="divider">or try demo</div>
+    <div class="demo-row">
+      <button class="demo-btn" onclick="login('consumer')">👤 Consumer Demo</button>
+      <button class="demo-btn" onclick="login('brand')">🏢 Brand Demo</button>
+    </div>
+    <div class="signup-link">New here? <span onclick="goPage('signup')">Create account →</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ════ SIGNUP PAGE ════ -->
+<div class="page" id="page-signup">
+<div class="login-bg">
+  <div class="login-logo-wrap">
+    <div class="login-logo">snapdeal</div>
+    <div class="login-tagline">CREATE ACCOUNT</div>
+  </div>
+  <div class="signup-card">
+    <div class="form-group"><label>Full Name</label><input placeholder="Your full name"></div>
+    <div class="form-group"><label>Phone Number</label><input placeholder="+91 XXXXXXXXXX" type="tel"></div>
+    <div class="form-group"><label>Email</label><input placeholder="you@email.com" type="email"></div>
+    <div class="form-group"><label>Your City</label>
+      <select>
+        <option>Nagpur</option><option>Indore</option><option>Surat</option><option>Patna</option><option>Jaipur</option><option>Bhopal</option><option>Lucknow</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Password</label><input placeholder="Create password" type="password"></div>
+    <button class="login-btn" onclick="login('consumer')">Create Account</button>
+    <div class="signup-link" style="margin-top:12px">Already have account? <span onclick="goPage('login')">Login →</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ════ HOME PAGE ════ -->
+<div class="page" id="page-home">
+<div class="nav">
+  <div class="nav-logo">snapdeal</div>
+  <div class="nav-right">
+    <span class="nav-icon">🔍</span>
+    <span class="nav-icon" onclick="goPage('cart')">🛒<span class="cart-dot" id="cart-count">0</span></span>
+    <span class="nav-icon" onclick="goPage('profile')">👤</span>
+  </div>
+</div>
+<div class="search-wrap"><div class="sbox"><span>🔍</span><input placeholder="Search Titan brands..."></div></div>
+<div class="pb">
+  <div class="hero">
+    <div class="hero-tag">TITAN CAPITAL × SNAPDEAL</div>
+    <div class="hero-title">Titan Commerce<br>Launchpad</div>
+    <div class="hero-sub">India's next big brands — discovered by you, first</div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hn">200+</div><div class="hl">Startups</div></div>
+      <div class="hstat"><div class="hn">300M+</div><div class="hl">Consumers</div></div>
+      <div class="hstat"><div class="hn">Tier 2/3</div><div class="hl">First</div></div>
+    </div>
+  </div>
+  <div class="city-wrap">
+    <div class="city-head"><div class="city-label">📍 Brands Near You</div><div class="city-change" onclick="showToast('GPS location detected')">Change city</div></div>
+    <div class="city-current"><span style="font-size:20px">📍</span><div><div class="city-name-big" id="curr-city">Nagpur, Maharashtra</div><div class="city-sub-sm" id="curr-city-sub">8 brands launching in your city this week</div></div></div>
+    <div class="chips">
+      <div class="chip active" onclick="selCity(this,'Nagpur','Maharashtra')">Nagpur</div>
+      <div class="chip" onclick="selCity(this,'Indore','Madhya Pradesh')">Indore</div>
+      <div class="chip" onclick="selCity(this,'Patna','Bihar')">Patna</div>
+      <div class="chip" onclick="selCity(this,'Surat','Gujarat')">Surat</div>
+      <div class="chip" onclick="selCity(this,'Jaipur','Rajasthan')">Jaipur</div>
+      <div class="chip" onclick="selCity(this,'Bhopal','MP')">Bhopal</div>
+      <div class="chip" onclick="selCity(this,'Lucknow','UP')">Lucknow</div>
+    </div>
+  </div>
+  <div class="domain-wrap">
+    <div class="domain-label">Browse by Domain</div>
+    <div class="domain-row">
+      <div class="dpill active" onclick="selDomain(this,'all')"><div class="dp-icon">🚀</div><div class="dp-lbl">All</div></div>
+      <div class="dpill" onclick="selDomain(this,'health')"><div class="dp-icon">💊</div><div class="dp-lbl">Health</div></div>
+      <div class="dpill" onclick="selDomain(this,'beauty')"><div class="dp-icon">💄</div><div class="dp-lbl">Beauty</div></div>
+      <div class="dpill" onclick="selDomain(this,'food')"><div class="dp-icon">🥗</div><div class="dp-lbl">Food</div></div>
+      <div class="dpill" onclick="selDomain(this,'sports')"><div class="dp-icon">🏋️</div><div class="dp-lbl">Sports</div></div>
+      <div class="dpill" onclick="selDomain(this,'home')"><div class="dp-icon">🏠</div><div class="dp-lbl">Home</div></div>
+      <div class="dpill" onclick="selDomain(this,'tech')"><div class="dp-icon">💻</div><div class="dp-lbl">Tech</div></div>
+    </div>
+  </div>
+  <div class="brands-sec">
+    <div class="sec-head"><div class="sec-title">🔥 Launching near you</div><div class="sec-ct" id="bc">6 brands</div></div>
+    <div class="brands-grid" id="brands-grid"></div>
+  </div>
+</div>
+<div class="bnav">
+  <div class="bni act"><div class="bni-icon">🏠</div><div class="bni-lbl" style="color:var(--red)">Home</div></div>
+  <div class="bni" onclick="showToast('Discover — coming soon')"><div class="bni-icon">🔍</div><div class="bni-lbl">Discover</div></div>
+  <div class="bni" onclick="goPage('cart')"><div class="bni-icon">🛒</div><div class="bni-lbl">Cart</div></div>
+  <div class="bni" onclick="goPage('profile')"><div class="bni-icon">👤</div><div class="bni-lbl">Profile</div></div>
+</div>
+</div>
+
+<!-- ════ BRAND DETAIL ════ -->
+<div class="page" id="page-detail">
+<div class="pb" id="detail-root"></div>
+<div class="bnav">
+  <div class="bni" onclick="goPage('home')"><div class="bni-icon">🏠</div><div class="bni-lbl">Home</div></div>
+  <div class="bni"><div class="bni-icon">🔍</div><div class="bni-lbl">Discover</div></div>
+  <div class="bni" onclick="goPage('cart')"><div class="bni-icon">🛒</div><div class="bni-lbl">Cart</div></div>
+  <div class="bni" onclick="goPage('profile')"><div class="bni-icon">👤</div><div class="bni-lbl">Profile</div></div>
+</div>
+</div>
+
+<!-- ════ DASHBOARD ════ -->
+<div class="page" id="page-dashboard">
+<div class="pb">
+  <div class="dash-head"><h1>Brand Dashboard</h1><p id="dash-brand-name">SkinKraft × Titan Commerce Launchpad</p></div>
+  <div class="dash-body">
+    <div class="dm-grid">
+      <div class="dm"><div class="dm-lbl">Total Sales</div><div class="dm-val">₹2.4L</div><div class="dm-sub">↑ 34% this week</div></div>
+      <div class="dm"><div class="dm-lbl">Orders</div><div class="dm-val">847</div><div class="dm-sub">↑ 128 today</div></div>
+      <div class="dm"><div class="dm-lbl">Consumers</div><div class="dm-val">12.4K</div><div class="dm-sub">Tier 2/3 cities</div></div>
+      <div class="dm"><div class="dm-lbl">Conversion</div><div class="dm-val">6.8%</div><div class="dm-sub">↑ vs 2.1% avg</div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Weekly Sales (₹)</div>
+      <div class="bar-chart">
+        <div class="bar-col"><div class="bar" style="height:40%"></div><div class="bar-lbl">Mon</div></div>
+        <div class="bar-col"><div class="bar" style="height:55%"></div><div class="bar-lbl">Tue</div></div>
+        <div class="bar-col"><div class="bar" style="height:45%"></div><div class="bar-lbl">Wed</div></div>
+        <div class="bar-col"><div class="bar" style="height:70%"></div><div class="bar-lbl">Thu</div></div>
+        <div class="bar-col"><div class="bar" style="height:85%"></div><div class="bar-lbl">Fri</div></div>
+        <div class="bar-col"><div class="bar" style="height:100%;background:var(--green)"></div><div class="bar-lbl">Sat</div></div>
+        <div class="bar-col"><div class="bar" style="height:90%"></div><div class="bar-lbl">Sun</div></div>
+      </div>
+    </div>
+    <div class="orders-box">
+      <div class="chart-title" style="margin-bottom:12px">Recent Orders</div>
+      <div class="order-row"><div class="oi">📦</div><div style="flex:1"><div class="oin">Moisture Surge Kit</div><div class="oil">📍 Nagpur, MH</div></div><div style="text-align:right"><div class="oamt">₹599</div><div class="ostatus del">Delivered</div></div></div>
+      <div class="order-row"><div class="oi">📦</div><div style="flex:1"><div class="oin">Custom Serum 30ml</div><div class="oil">📍 Indore, MP</div></div><div style="text-align:right"><div class="oamt">₹899</div><div class="ostatus ship">Shipped</div></div></div>
+      <div class="order-row"><div class="oi">📦</div><div style="flex:1"><div class="oin">Starter Pack</div><div class="oil">📍 Patna, BR</div></div><div style="text-align:right"><div class="oamt">₹299</div><div class="ostatus proc">Processing</div></div></div>
+      <div class="order-row"><div class="oi">📦</div><div style="flex:1"><div class="oin">Night Repair Cream</div><div class="oil">📍 Surat, GJ</div></div><div style="text-align:right"><div class="oamt">₹749</div><div class="ostatus del">Delivered</div></div></div>
+    </div>
+    <div class="ls-box">
+      <div class="ls-title">Launch Status</div>
+      <div class="ls-row"><div class="ls-dot done"></div><div class="ls-txt">Brand onboarding complete</div><div class="ls-date">May 1</div></div>
+      <div class="ls-row"><div class="ls-dot done"></div><div class="ls-txt">Products listed on Snapdeal</div><div class="ls-date">May 3</div></div>
+      <div class="ls-row"><div class="ls-dot done"></div><div class="ls-txt">Exclusive launch — LIVE</div><div class="ls-date">May 5</div></div>
+      <div class="ls-row"><div class="ls-dot prog"></div><div class="ls-txt">Titan data report to investors</div><div class="ls-date">May 15</div></div>
+      <div class="ls-row"><div class="ls-dot todo"></div><div class="ls-txt">Series A fundraise support</div><div class="ls-date">Jun 2026</div></div>
+    </div>
+  </div>
+</div>
+<div class="bnav">
+  <div class="bni" onclick="goPage('home')"><div class="bni-icon">🏠</div><div class="bni-lbl">Home</div></div>
+  <div class="bni act"><div class="bni-icon">📊</div><div class="bni-lbl" style="color:var(--red)">Dashboard</div></div>
+  <div class="bni" onclick="showToast('Orders — 847 total')"><div class="bni-icon">📦</div><div class="bni-lbl">Orders</div></div>
+  <div class="bni" onclick="goPage('profile')"><div class="bni-icon">👤</div><div class="bni-lbl">Profile</div></div>
+</div>
+</div>
+
+<!-- ════ CART ════ -->
+<div class="page" id="page-cart">
+<div class="nav"><div class="nav-logo" onclick="goPage('home')">← Cart</div></div>
+<div class="pb">
+  <div class="cart-body" id="cart-body"></div>
+</div>
+<div class="bnav">
+  <div class="bni" onclick="goPage('home')"><div class="bni-icon">🏠</div><div class="bni-lbl">Home</div></div>
+  <div class="bni"><div class="bni-icon">🔍</div><div class="bni-lbl">Discover</div></div>
+  <div class="bni act"><div class="bni-icon">🛒</div><div class="bni-lbl" style="color:var(--red)">Cart</div></div>
+  <div class="bni" onclick="goPage('profile')"><div class="bni-icon">👤</div><div class="bni-lbl">Profile</div></div>
+</div>
+</div>
+
+<!-- ════ PROFILE ════ -->
+<div class="page" id="page-profile">
+<div class="pb">
+  <div class="prof-head">
+    <div class="pav" id="pav" style="background:var(--green)">TG</div>
+    <div class="pname" id="pname">Tanishq Gosewade</div>
+    <div class="prole" id="prole">Consumer · Nagpur</div>
+  </div>
+  <div class="prof-body">
+    <div class="ps">
+      <div class="psi" onclick="showToast('My Orders — 3 orders')"><span class="ps-ic">📦</span><span class="ps-tx">My Orders</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="showToast('Saved — 4 brands')"><span class="ps-ic">❤️</span><span class="ps-tx">Saved Brands</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="showToast('Addresses: Nagpur')"><span class="ps-ic">📍</span><span class="ps-tx">Addresses</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="showToast('Payments setup')"><span class="ps-ic">💳</span><span class="ps-tx">Payments</span><span class="ps-ar">›</span></div>
+    </div>
+    <div class="ps">
+      <div class="psi" onclick="showToast('Notifications on')"><span class="ps-ic">🔔</span><span class="ps-tx">Launch Notifications</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="showToast('6 brands followed')"><span class="ps-ic">🚀</span><span class="ps-tx">Following Brands</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="goPage('cart')"><span class="ps-ic">🛒</span><span class="ps-tx">My Cart</span><span class="ps-ar">›</span></div>
+    </div>
+    <div class="ps">
+      <div class="psi" onclick="showToast('Help center')"><span class="ps-ic">❓</span><span class="ps-tx">Help & Support</span><span class="ps-ar">›</span></div>
+      <div class="psi" onclick="showToast('About Titan Commerce Launchpad')"><span class="ps-ic">ℹ️</span><span class="ps-tx">About Launchpad</span><span class="ps-ar">›</span></div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+<div class="bnav">
+  <div class="bni" onclick="goPage('home')"><div class="bni-icon">🏠</div><div class="bni-lbl">Home</div></div>
+  <div class="bni"><div class="bni-icon">🔍</div><div class="bni-lbl">Discover</div></div>
+  <div class="bni" onclick="goPage('cart')"><div class="bni-icon">🛒</div><div class="bni-lbl">Cart</div></div>
+  <div class="bni act"><div class="bni-icon">👤</div><div class="bni-lbl" style="color:var(--red)">Profile</div></div>
+</div>
+</div>
+
+<script>
+// ── DATA ──
+const brands=[
+  {id:'skinkraft',name:'SkinKraft',cat:'Beauty',sub:'Personalised skincare',icon:'SK',color:'#dcfce7',text:'#166534',price:'₹299',priceNum:299,city:'Nagpur',domain:'beauty',badge:'exc',
+   founder:{name:'Chaitanya Nallan',role:'CEO & Co-Founder',story:'I spent 10 years watching my sister struggle with skincare products that never worked for her Indian skin type. Every international brand was built for a different climate, different skin. In 2019, I decided to fix this — I built SkinKraft to create AI-personalised skincare made for Indian skin, Indian weather, Indian water.',why:'Titan Capital invested because SkinKraft solves a real, underserved problem at scale. With 500M+ women in India using skincare, the AI personalisation moat is hard to replicate. We saw 3x growth in Tier 2/3 — exactly where Snapdeal reaches.',funding:[{c:'#16A34A',t:'Founded',a:'2019'},{c:'#16A34A',t:'Seed Round',a:'₹2.5 Cr'},{c:'#16A34A',t:'Titan Capital — Series A',a:'Live'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'Now'},{c:'#e5e7eb',t:'Pan-India Expansion',a:'Q3 2026'}]},
+   products:[{n:'Moisture Surge Kit',p:'₹599',pn:599,e:'🧴'},{n:'Custom Serum',p:'₹899',pn:899,e:'✨'},{n:'Starter Pack',p:'₹299',pn:299,e:'💆'},{n:'Night Cream',p:'₹749',pn:749,e:'🌙'}],
+   metrics:[{n:'12.4K',l:'Consumers'},{n:'₹2.4L',l:'Sales'},{n:'6.8%',l:'Conversion'},{n:'94%',l:'Satisfaction'}],
+   cities:[{c:'Nagpur',p:32},{c:'Indore',p:24},{c:'Surat',p:18},{c:'Patna',p:14},{c:'Others',p:12}]},
+  {id:'wellroots',name:'Wellroots',cat:'Health',sub:'Ayurvedic wellness',icon:'WR',color:'#dbeafe',text:'#1e40af',price:'₹199',priceNum:199,city:'Indore',domain:'health',badge:'tvb',
+   founder:{name:'Priya Sharma',role:'Founder & CEO',story:'My grandmother healed everything with plants from her garden. When I moved to a city for engineering, I lost that connection — and my health suffered. I spent 3 years studying Ayurveda and modern formulation science. Wellroots is my attempt to bring that wisdom to every household in Bharat.',why:'Titan Capital invested because the Ayurveda market is growing at 15% YoY and Tier 2/3 cities trust it more than metros. Priya\'s domain expertise and asset-light model gives strong margins.',funding:[{c:'#16A34A',t:'Founded',a:'2022'},{c:'#16A34A',t:'Friends & Family',a:'₹50L'},{c:'#16A34A',t:'Titan Capital',a:'₹3 Cr'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'Now'},{c:'#e5e7eb',t:'Export Markets',a:'2027'}]},
+   products:[{n:'Ashwagandha Kit',p:'₹399',pn:399,e:'🌿'},{n:'Triphala Pack',p:'₹199',pn:199,e:'🍃'},{n:'Sleep Drops',p:'₹299',pn:299,e:'😴'},{n:'Immunity Bundle',p:'₹599',pn:599,e:'💪'}],
+   metrics:[{n:'8.2K',l:'Consumers'},{n:'₹1.1L',l:'Sales'},{n:'5.2%',l:'Conversion'},{n:'91%',l:'Satisfaction'}],
+   cities:[{c:'Indore',p:35},{c:'Nagpur',p:22},{c:'Bhopal',p:20},{c:'Jaipur',p:13},{c:'Others',p:10}]},
+  {id:'fittribe',name:'FitTribe',cat:'Sports',sub:'Sports nutrition',icon:'FT',color:'#ffedd5',text:'#9a3412',price:'₹449',priceNum:449,city:'Nagpur',domain:'sports',badge:'hot',
+   founder:{name:'Rahul Desai',role:'Co-Founder',story:'I was a national-level athlete who could never afford quality nutrition. Everything good was imported and expensive. I trained on dal and roti while watching city kids take supplements. FitTribe exists so every athlete in Bharat gets real nutrition — not just the privileged ones.',why:'India has 200M+ fitness enthusiasts but 90% can\'t afford quality supplements. Titan Capital invested because Rahul\'s insider knowledge and Made-in-India manufacturing creates a defensible position in an underserved goldmine.',funding:[{c:'#16A34A',t:'Founded',a:'2023'},{c:'#16A34A',t:'Bootstrapped',a:'₹30L'},{c:'#16A34A',t:'Titan Capital',a:'₹2 Cr'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'Now'},{c:'#e5e7eb',t:'Offline Expansion',a:'Q4 2026'}]},
+   products:[{n:'Whey Protein 1kg',p:'₹899',pn:899,e:'💪'},{n:'Pre-Workout',p:'₹449',pn:449,e:'⚡'},{n:'BCAA Pack',p:'₹399',pn:399,e:'🏋️'},{n:'Mass Gainer',p:'₹1,199',pn:1199,e:'🥛'}],
+   metrics:[{n:'9.8K',l:'Consumers'},{n:'₹1.8L',l:'Sales'},{n:'7.1%',l:'Conversion'},{n:'89%',l:'Satisfaction'}],
+   cities:[{c:'Nagpur',p:28},{c:'Surat',p:26},{c:'Lucknow',p:22},{c:'Jaipur',p:14},{c:'Others',p:10}]},
+  {id:'greenkart',name:'GreenKart',cat:'Food',sub:'Organic grocery',icon:'GK',color:'#dcfce7',text:'#166534',price:'₹89',priceNum:89,city:'Surat',domain:'food',badge:'exc',
+   founder:{name:'Ankit Patel',role:'Founder',story:'My family has farmed organic produce in Gujarat for 3 generations. Middlemen took everything. When I saw D2C brands charging ₹600 for organic dal my uncle sold for ₹80, I knew something was broken. GreenKart connects farmers directly to consumers.',why:'The organic food market grows at 20% YoY and farm-to-consumer models create superior unit economics. Ankit\'s deep supply chain in Gujarat gives a structural advantage nearly impossible to replicate.',funding:[{c:'#16A34A',t:'Founded',a:'2023'},{c:'#16A34A',t:'Titan Capital',a:'₹4 Cr'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'Now'},{c:'#e5e7eb',t:'50 Cities',a:'2027'}]},
+   products:[{n:'Organic Dal 1kg',p:'₹189',pn:189,e:'🫘'},{n:'Brown Rice 2kg',p:'₹299',pn:299,e:'🌾'},{n:'Organic Ghee',p:'₹599',pn:599,e:'🧈'},{n:'Veggie Box',p:'₹399',pn:399,e:'🥦'}],
+   metrics:[{n:'6.1K',l:'Consumers'},{n:'₹89K',l:'Sales'},{n:'4.8%',l:'Conversion'},{n:'96%',l:'Satisfaction'}],
+   cities:[{c:'Surat',p:38},{c:'Indore',p:25},{c:'Nagpur',p:18},{c:'Bhopal',p:12},{c:'Others',p:7}]},
+  {id:'nativ',name:'Nativ',cat:'Home',sub:'Organic home care',icon:'NV',color:'#ede9fe',text:'#5b21b6',price:'₹149',priceNum:149,city:'Nagpur',domain:'home',badge:'tvb',
+   founder:{name:'Sneha Kulkarni',role:'Co-Founder',story:'I became a mother in 2021 and realised everything I used to clean my home was toxic. I spent 2 years formulating plant-based alternatives using Indian neem, tulsi, and citrus. Nativ is what I wish existed when my daughter was born.',why:'The home care market is ₹18,000 Cr and growing. The chemical-free segment is nascent but accelerating post-COVID. Sneha\'s formulation IP and understanding of the Indian mom consumer makes Nativ category-defining.',funding:[{c:'#16A34A',t:'Founded',a:'2023'},{c:'#16A34A',t:'Titan Capital',a:'₹1.5 Cr'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'May 15'},{c:'#e5e7eb',t:'Offline Retail',a:'2027'}]},
+   products:[{n:'Floor Cleaner 1L',p:'₹149',pn:149,e:'🏠'},{n:'Dishwash Liquid',p:'₹199',pn:199,e:'🍽️'},{n:'Bathroom Cleaner',p:'₹179',pn:179,e:'🚿'},{n:'Bundle Pack',p:'₹499',pn:499,e:'📦'}],
+   metrics:[{n:'Coming',l:'May 15'},{n:'500+',l:'Pre-reg'},{n:'100%',l:'Natural'},{n:'Tier 2/3',l:'Target'}],
+   cities:[{c:'Nagpur',p:40},{c:'Indore',p:25},{c:'Patna',p:20},{c:'Others',p:15}]},
+  {id:'brewbox',name:'BrewBox',cat:'Food',sub:'Specialty coffee',icon:'BB',color:'#fef3c7',text:'#92400e',price:'₹349',priceNum:349,city:'Indore',domain:'food',badge:'hot',
+   founder:{name:'Karthik Menon',role:'Founder',story:'I quit my software job to roast coffee. India drinks 1.2 billion cups a day but 95% is cheap instant. I wanted to bring fresh, single-origin Indian coffee to every home in Bharat — not just Bangalore cafes. BrewBox sources from Coorg and Wayanad farmers directly.',why:'Specialty coffee is a ₹2,000 Cr opportunity growing at 25% YoY. Karthik\'s direct farmer relationships and vertically integrated model create strong margins. Tier 2/3 is completely untapped.',funding:[{c:'#16A34A',t:'Founded',a:'2022'},{c:'#16A34A',t:'Titan Capital',a:'₹2.5 Cr'},{c:'#f59e0b',t:'Snapdeal Launchpad',a:'Now'},{c:'#e5e7eb',t:'Café Partnerships',a:'2026'}]},
+   products:[{n:'Coorg Filter Coffee',p:'₹349',pn:349,e:'☕'},{n:'Cold Brew Kit',p:'₹499',pn:499,e:'🧊'},{n:'Starter Box',p:'₹799',pn:799,e:'📦'},{n:'Gift Set',p:'₹1,299',pn:1299,e:'🎁'}],
+   metrics:[{n:'4.2K',l:'Consumers'},{n:'₹62K',l:'Sales'},{n:'5.9%',l:'Conversion'},{n:'97%',l:'Satisfaction'}],
+   cities:[{c:'Indore',p:32},{c:'Nagpur',p:28},{c:'Lucknow',p:20},{c:'Bhopal',p:12},{c:'Others',p:8}]}
+];
+
+// ── STATE ──
+let cart=[];
+let currentUser={type:'consumer',name:'Tanishq Gosewade',city:'Nagpur',initials:'TG'};
+let currentDetailBrand=null;
+let currentTab='products';
+
+// ── RENDER BRANDS ──
+function renderBrands(filter='all'){
+  const grid=document.getElementById('brands-grid');
+  const filtered=filter==='all'?brands:brands.filter(b=>b.domain===filter);
+  document.getElementById('bc').textContent=filtered.length+' brands';
+  grid.innerHTML=filtered.map(b=>`
+    <div class="bc" onclick="goDetail('${b.id}')">
+      <div class="bc-badges">
+        ${b.badge==='exc'?'<span class="badge exc">EXCLUSIVE</span>':''}
+        ${b.badge==='tvb'?'<span class="badge tvb">✓ TITAN</span>':''}
+        ${b.badge==='hot'?'<span class="badge hot">HOT🔥</span>':''}
+        <span class="badge cityb">📍${b.city}</span>
+      </div>
+      <div class="bi" style="background:${b.color};color:${b.text}">${b.icon}</div>
+      <div class="bn2">${b.name}</div>
+      <div class="bcat">${b.sub}</div>
+      <div class="bprice">${b.price}</div>
+      <button class="bbtn" onclick="event.stopPropagation();addToCart('${b.id}','${b.products[0].n}',${b.products[0].pn},'${b.products[0].e}','${b.name}')">Shop Now</button>
+    </div>`).join('');
+}
+
+// ── DETAIL ──
+function goDetail(id){
+  const b=brands.find(x=>x.id===id);
+  if(!b)return;
+  currentDetailBrand=b;
+  currentTab='products';
+  renderDetail(b);
+  goPage('detail');
+}
+
+function renderDetail(b){
+  document.getElementById('detail-root').innerHTML=`
+    <div>
+      <div class="dh">
+        <div class="dback" onclick="goPage('home')">← Back to Launchpad</div>
+        <div class="dtop">
+          <div class="di-lg" style="background:${b.color};color:${b.text}">${b.icon}</div>
+          <div>
+            <div class="dname">${b.name}</div>
+            <div class="dcat">${b.sub}</div>
+            <div class="dtags">
+              <span class="dtag">🚀 Titan Backed</span>
+              <span class="dtag">📍${b.city}</span>
+              <span class="dtag">${b.cat}</span>
+            </div>
+          </div>
+        </div>
+        <div class="city-strip"><span>📍 Launching in ${b.city} & ${b.cities.length} cities across Bharat</span></div>
+      </div>
+      <div class="tabs" id="det-tabs">
+        <div class="tab active" onclick="switchTab('products')">Products</div>
+        <div class="tab" onclick="switchTab('story')">Founder Story</div>
+        <div class="tab" onclick="switchTab('impact')">Impact</div>
+      </div>
+      <div id="tab-content">${renderProducts(b)}</div>
+    </div>`;
+}
+
+function switchTab(tab){
+  currentTab=tab;
+  const b=currentDetailBrand;
+  document.querySelectorAll('#det-tabs .tab').forEach((t,i)=>{
+    t.classList.toggle('active',['products','story','impact'][i]===tab);
+  });
+  document.getElementById('tab-content').innerHTML=
+    tab==='products'?renderProducts(b):tab==='story'?renderStory(b):renderImpact(b);
+}
+
+function renderProducts(b){
+  return`<div class="prod-list">${b.products.map(p=>`
+    <div class="prod-row">
+      <div class="prod-icon">${p.e}</div>
+      <div class="prod-info"><div class="prod-name">${p.n}</div><div class="prod-price">${p.p}</div></div>
+      <button class="prod-btn" onclick="addToCart('${b.id}','${p.n}',${p.pn},'${p.e}','${b.name}')">Add</button>
+    </div>`).join('')}</div>`;
+}
+
+function renderStory(b){
+  const f=b.founder;
+  return`<div class="founder-sec">
+    <div class="fc">
+      <div class="fc-head">
+        <div class="fav" style="background:${b.color};color:${b.text}">${b.icon}</div>
+        <div><div class="fname">${f.name}</div><div class="frole">${f.role}, ${b.name}</div>
+        <div class="fstamp"><span>✓ Titan Capital Backed Founder</span></div></div>
+      </div>
+      <div class="fc-body">
+        <div class="fstory">"${f.story}"</div>
+        <div class="why-box"><div class="why-lbl">Why Titan Capital Backed ${b.name}</div><div class="why-text">${f.why}</div></div>
+      </div>
+      <div class="ftl">
+        <div class="ftl-title">Journey</div>
+        ${f.funding.map(r=>`<div class="ftl-row"><div class="ftl-dot" style="background:${r.c}"></div><div class="ftl-text">${r.t}</div><div class="ftl-amt">${r.a}</div></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderImpact(b){
+  return`<div class="impact-sec">
+    <div class="mg">${b.metrics.map(m=>`<div class="mc"><div class="mc-n">${m.n}</div><div class="mc-l">${m.l}</div></div>`).join('')}</div>
+    <div class="cdd">
+      <div class="cdd-title">📍 City-wise Consumer Distribution</div>
+      ${b.cities.map(c=>`<div class="cdr"><div class="cdc">${c.c}</div><div class="cdbw"><div class="cdb" style="width:${c.p}%"></div></div><div class="cdp">${c.p}%</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ── CART ──
+function addToCart(brandId,prodName,price,icon,brandName){
+  const existing=cart.find(c=>c.name===prodName&&c.brand===brandName);
+  if(existing){existing.qty++}else{cart.push({id:brandId,name:prodName,price,icon,brand:brandName,qty:1})}
+  updateCartCount();
+  showToast('Added to cart! ✅');
+}
+
+function updateCartCount(){
+  const total=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cart-count').textContent=total;
+}
+
+function renderCart(){
+  const cb=document.getElementById('cart-body');
+  if(cart.length===0){
+    cb.innerHTML=`<div class="empty-cart"><div class="ei">🛒</div><p>Your cart is empty</p><button class="shop-now-btn" onclick="goPage('home')">Discover Brands</button></div>`;
+    return;
+  }
+  const subtotal=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const delivery=subtotal>999?0:49;
+  const total=subtotal+delivery;
+  cb.innerHTML=`
+    ${cart.map((c,i)=>`
+      <div class="cart-row">
+        <div class="cart-icon" style="background:#f8f8f8">${c.icon}</div>
+        <div class="cart-info">
+          <div class="cart-name">${c.name}</div>
+          <div class="cart-brand">${c.brand}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+            <div class="qty-num">${c.qty}</div>
+            <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+          </div>
+        </div>
+        <div>
+          <div class="cart-price">₹${(c.price*c.qty).toLocaleString()}</div>
+          <div class="cart-del" onclick="removeItem(${i})">🗑️</div>
+        </div>
+      </div>`).join('')}
+    <div class="cart-total">
+      <div class="ct-row"><div class="ct-lbl">Subtotal</div><div class="ct-val">₹${subtotal.toLocaleString()}</div></div>
+      <div class="ct-row"><div class="ct-lbl">Delivery</div><div class="ct-val">${delivery===0?'FREE ✅':'₹'+delivery}</div></div>
+      ${subtotal<999?`<div class="ct-row"><div class="ct-lbl" style="color:var(--green)">Add ₹${999-subtotal} more for free delivery</div></div>`:''}
+      <div class="ct-row"><div class="ct-total-lbl">Total</div><div class="ct-total-val">₹${total.toLocaleString()}</div></div>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>`;
+}
+
+function changeQty(i,d){
+  cart[i].qty+=d;
+  if(cart[i].qty<=0)cart.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+
+function removeItem(i){
+  cart.splice(i,1);
+  updateCartCount();
+  renderCart();
+}
+
+function checkout(){
+  cart=[];
+  updateCartCount();
+  showToast('Order placed! 🎉');
+  setTimeout(()=>goPage('home'),1500);
+}
+
+// ── AUTH ──
+function switchLoginTab(t){
+  document.querySelectorAll('.ltab').forEach((el,i)=>el.classList.toggle('active',i===(t==='consumer'?0:1)));
+  document.getElementById('consumer-form').style.display=t==='consumer'?'block':'none';
+  document.getElementById('brand-form').style.display=t==='brand'?'block':'none';
+}
+
+function login(type){
+  currentUser.type=type;
+  if(type==='brand'){
+    currentUser={type:'brand',name:'SkinKraft Team',city:'Nagpur',initials:'SK'};
+    document.getElementById('pav').textContent='SK';
+    document.getElementById('pav').style.background='#166534';
+    document.getElementById('pname').textContent='SkinKraft Team';
+    document.getElementById('prole').textContent='Brand Partner · Titan Launchpad';
+    goPage('dashboard');
+  } else {
+    currentUser={type:'consumer',name:'Tanishq Gosewade',city:'Nagpur',initials:'TG'};
+    document.getElementById('pav').textContent='TG';
+    document.getElementById('pav').style.background='var(--green)';
+    document.getElementById('pname').textContent='Tanishq Gosewade';
+    document.getElementById('prole').textContent='Consumer · Nagpur';
+    goPage('home');
+  }
+}
+
+function logout(){
+  cart=[];
+  updateCartCount();
+  goPage('login');
+}
+
+// ── UTILS ──
+function selCity(el,city,state){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('curr-city').textContent=city+', '+state;
+  document.getElementById('curr-city-sub').textContent=Math.floor(Math.random()*5+4)+' brands launching in '+city+' this week';
+  showToast('Showing brands near '+city);
+}
+
+function selDomain(el,domain){
+  document.querySelectorAll('.dpill').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  renderBrands(domain);
+}
+
+function goPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  window.scrollTo(0,0);
+  if(p==='cart')renderCart();
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ── INIT ──
+renderBrands();
+</script>
+</body>
+</html>
